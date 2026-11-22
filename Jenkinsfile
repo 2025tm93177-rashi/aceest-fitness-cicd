@@ -41,9 +41,11 @@ pipeline {
         stage('Push to Docker Hub') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DH_USER', passwordVariable: 'DH_PASS')]) {
-                    sh "echo \$DH_PASS | docker login -u \$DH_USER --password-stdin"
-                    sh "docker push ${DOCKER_REPO}:${IMAGE_TAG}"
-                    sh "docker push ${DOCKER_REPO}:latest"
+                    sh '''
+                        echo "$DH_PASS" | docker login -u "$DH_USER" --password-stdin
+                        docker push "${DOCKER_REPO}:${IMAGE_TAG}"
+                        docker push "${DOCKER_REPO}:latest"
+                    '''
                 }
             }
         }
